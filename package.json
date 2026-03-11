@@ -1,0 +1,38 @@
+{
+  "name": "@openoctopus/casa",
+  "version": "2025.1.0",
+  "description": "Home Assistant integration for OpenOctopus — summon your smart home devices",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint ."
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "zod": "^3.24.0",
+    "consola": "^3.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "tsdown": "^0.12.0",
+    "vitest": "^4.0.0",
+    "@types/ws": "^8.5.0",
+    "@types/node": "^22.0.0",
+    "oxlint": "^0.16.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
