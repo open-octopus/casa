@@ -17,15 +17,19 @@ export function createTriggerSceneTool(client: HaClient): ToolDefinition {
       required: ['scene_id'],
     },
     execute: async (params) => {
-      const sceneId = params.scene_id as string
+      try {
+        const sceneId = params.scene_id as string
 
-      await client.callService('scene', 'turn_on', {
-        entity_id: sceneId,
-      })
+        await client.callService('scene', 'turn_on', {
+          entity_id: sceneId,
+        })
 
-      return {
-        success: true,
-        sceneId,
+        return {
+          success: true,
+          sceneId,
+        }
+      } catch (err) {
+        return { error: err instanceof Error ? err.message : String(err) }
       }
     },
   }

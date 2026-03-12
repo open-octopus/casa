@@ -22,27 +22,30 @@ export function createGetHistoryTool(client: HaClient): ToolDefinition {
       required: ['entity_id'],
     },
     execute: async (params) => {
-      const entityId = params.entity_id as string
-      const hours = (params.hours as number) ?? 24
+      try {
+        const entityId = params.entity_id as string
+        const hours = (params.hours as number) ?? 24
 
-      const startTime = new Date(
-        Date.now() - hours * 60 * 60 * 1000,
-      ).toISOString()
+        const startTime = new Date(
+          Date.now() - hours * 60 * 60 * 1000,
+        ).toISOString()
 
-      const history = await client.getHistory(entityId, startTime)
+        const history = await client.getHistory(entityId, startTime)
 
-      // Flatten and simplify
-      const entries = (history[0] ?? []).map((entry) => ({
-        state: entry.state,
-        lastChanged: entry.last_changed,
-        attributes: entry.attributes,
-      }))
+        const entries = (history[0] ?? []).map((entry) => ({
+          state: entry.state,
+          lastChanged: entry.last_changed,
+          attributes: entry.attributes,
+        }))
 
-      return {
-        entityId,
-        hours,
-        entries,
-        count: entries.length,
+        return {
+          entityId,
+          hours,
+          entries,
+          count: entries.length,
+        }
+      } catch (err) {
+        return { error: err instanceof Error ? err.message : String(err) }
       }
     },
   }

@@ -55,15 +55,14 @@ describe('createGetStateTool', () => {
     expect(client.getState).toHaveBeenCalledWith('light.living_room')
   })
 
-  it('propagates client errors', async () => {
+  it('returns error object on client failure', async () => {
     const client = mockClient({
       getState: vi.fn().mockRejectedValue(new Error('404 Not Found')),
     })
     const tool = createGetStateTool(client)
 
-    await expect(
-      tool.execute({ entity_id: 'light.nonexistent' }),
-    ).rejects.toThrow('404 Not Found')
+    const result = await tool.execute({ entity_id: 'light.nonexistent' })
+    expect(result).toEqual({ error: '404 Not Found' })
   })
 })
 
@@ -118,6 +117,19 @@ describe('createSetStateTool', () => {
       brightness: 128,
       color_name: 'blue',
     })
+  })
+
+  it('returns error object on service failure', async () => {
+    const client = mockClient({
+      callService: vi.fn().mockRejectedValue(new Error('Connection refused')),
+    })
+    const tool = createSetStateTool(client)
+
+    const result = await tool.execute({
+      entity_id: 'light.living_room',
+      service: 'turn_on',
+    })
+    expect(result).toEqual({ error: 'Connection refused' })
   })
 
   it('works without service_data', async () => {
@@ -206,6 +218,16 @@ describe('createGetHistoryTool', () => {
     expect(call[1]).toMatch(/^\d{4}-\d{2}-\d{2}T/)
   })
 
+  it('returns error object on client failure', async () => {
+    const client = mockClient({
+      getHistory: vi.fn().mockRejectedValue(new Error('Timeout')),
+    })
+    const tool = createGetHistoryTool(client)
+
+    const result = await tool.execute({ entity_id: 'sensor.temp' })
+    expect(result).toEqual({ error: 'Timeout' })
+  })
+
   it('handles empty history (no entries)', async () => {
     const client = mockClient({
       getHistory: vi.fn().mockResolvedValue([]),
@@ -251,14 +273,13 @@ describe('createTriggerSceneTool', () => {
     })
   })
 
-  it('propagates service call errors', async () => {
+  it('returns error object on service failure', async () => {
     const client = mockClient({
       callService: vi.fn().mockRejectedValue(new Error('Service unavailable')),
     })
     const tool = createTriggerSceneTool(client)
 
-    await expect(
-      tool.execute({ scene_id: 'scene.nonexistent' }),
-    ).rejects.toThrow('Service unavailable')
+    const result = await tool.execute({ scene_id: 'scene.nonexistent' })
+    expect(result).toEqual({ error: 'Service unavailable' })
   })
 })

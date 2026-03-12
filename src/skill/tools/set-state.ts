@@ -28,22 +28,25 @@ export function createSetStateTool(client: HaClient): ToolDefinition {
       required: ['entity_id', 'service'],
     },
     execute: async (params) => {
-      const entityId = params.entity_id as string
-      const service = params.service as string
-      const serviceData = (params.service_data as Record<string, unknown>) ?? {}
+      try {
+        const entityId = params.entity_id as string
+        const service = params.service as string
+        const serviceData = (params.service_data as Record<string, unknown>) ?? {}
 
-      // Extract domain from entity_id (e.g., "light" from "light.living_room")
-      const domain = entityId.split('.')[0]
+        const domain = entityId.split('.')[0]
 
-      await client.callService(domain, service, {
-        entity_id: entityId,
-        ...serviceData,
-      })
+        await client.callService(domain, service, {
+          entity_id: entityId,
+          ...serviceData,
+        })
 
-      return {
-        success: true,
-        entityId,
-        service: `${domain}.${service}`,
+        return {
+          success: true,
+          entityId,
+          service: `${domain}.${service}`,
+        }
+      } catch (err) {
+        return { error: err instanceof Error ? err.message : String(err) }
       }
     },
   }

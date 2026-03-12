@@ -17,11 +17,15 @@ export function createGetStateTool(client: HaClient): ToolDefinition {
       required: ['entity_id'],
     },
     execute: async (params) => {
-      const state = await client.getState(params.entity_id as string)
-      return {
-        entityId: state.entity_id,
-        state: state.state,
-        attributes: state.attributes,
+      try {
+        const state = await client.getState(params.entity_id as string)
+        return {
+          entityId: state.entity_id,
+          state: state.state,
+          attributes: state.attributes,
+        }
+      } catch (err) {
+        return { error: err instanceof Error ? err.message : String(err) }
       }
     },
   }
