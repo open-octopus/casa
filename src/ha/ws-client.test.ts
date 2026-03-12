@@ -199,6 +199,27 @@ describe('HaWsClient', () => {
     client.close()
   })
 
+  it('should log errors that occur after authentication', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const client = new HaWsClient('http://ha.local:8123', 'valid-token')
+    const connectPromise = client.connect()
+
+    await vi.advanceTimersByTimeAsync(10)
+    await connectPromise
+
+    // Simulate a post-auth error
+    mockWsInstances[0].emit('error', new Error('ECONNRESET'))
+
+    expect(spy).toHaveBeenCalledWith(
+      '[casa-ws] WebSocket error:',
+      'ECONNRESET',
+    )
+
+    spy.mockRestore()
+    client.close()
+  })
+
   it('should not reconnect after explicit close', async () => {
     const client = new HaWsClient('http://ha.local:8123', 'valid-token')
     const connectPromise = client.connect()

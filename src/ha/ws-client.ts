@@ -76,6 +76,8 @@ export class HaWsClient {
       this.ws.on('error', (err) => {
         if (!this.authenticated) {
           reject(err)
+        } else {
+          console.error('[casa-ws] WebSocket error:', err.message)
         }
       })
     })
