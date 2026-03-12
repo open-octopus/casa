@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import type { HaClient } from '../../ha/client.js'
 import type { HaState } from '../../ha/types.js'
 import { createGetStateTool } from './get-state.js'
