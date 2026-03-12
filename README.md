@@ -12,6 +12,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/open-octopus/casa/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/open-octopus/casa/ci.yml?style=for-the-badge&label=CI" alt="CI"></a>
   <a href="https://github.com/open-octopus/casa/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"></a>
   <a href="#"><img src="https://img.shields.io/badge/Status-Alpha-orange?style=for-the-badge" alt="Status"></a>
   <a href="https://github.com/open-octopus/openoctopus"><img src="https://img.shields.io/badge/Core_Repo-OpenOctopus-6C3FA0?style=for-the-badge" alt="Core"></a>
